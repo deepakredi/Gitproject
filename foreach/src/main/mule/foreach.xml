@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ae1f2448-9724-4595-8cc8-b18d7a53341a" >
+		<http:listener-connection host="0.0.0.0" port="8077" />
+	</http:listener-config>
+	<http:listener-config name="HTTP_Listener_config1" doc:name="HTTP Listener config" doc:id="2c2d94ee-6618-43fa-802e-41bdd27ab522" >
+		<http:listener-connection host="0.0.0.0" port="8086" />
+	</http:listener-config>
+	<flow name="foreachFlow" doc:id="7df6f171-b949-4d6b-a9d3-f079b70fe0af" >
+		<http:listener doc:name="Listener" doc:id="ca003ed4-5d17-470b-a352-61a9609c6f93" config-ref="HTTP_Listener_config" path="hi"/>
+		<ee:transform doc:name="Transform Message" doc:id="fc77cb32-71e1-4a13-b633-3ac046682135" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+1 to 10 map
+{
+	id: 200 + $$,
+	name: "siva", 
+	number: 1234567890,
+	 lname: "reddy"
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<parallel-foreach doc:name="Parallel For Each" doc:id="b0e3b815-c472-4e80-bbf4-df730e315c58" >
+			<logger level="INFO" doc:name="Logger" doc:id="ecbe657f-d079-4842-b410-3d7ef5ac23eb" message="#[payload]"/>
+		</parallel-foreach>
+	</flow>
+</mule>
